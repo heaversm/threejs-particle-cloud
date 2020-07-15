@@ -5,3 +5,10 @@ body {
   margin: 0px;
   overflow: hidden;
 }
+
+#container {
+  width: 375px;
+  height: 606px;
+  background: url('../images/poster.jpg');
+  background-size: cover;
+}

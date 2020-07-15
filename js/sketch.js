@@ -1,6 +1,5 @@
-      var _w=window.innerWidth;
-      var _h=window.innerHeight;
-
+      
+      var _w,_h;
       var group;
       var container, controls, stats;
       var particlesData = [];
@@ -39,6 +38,7 @@
       animate();
       initGUI();
       initTween();
+      initAudio();
 
 
       var morphTarget=[];
@@ -60,6 +60,15 @@
         });
 
       }
+      
+      function initAudio(){
+        container.addEventListener('click',startAudio);
+      }
+
+      function startAudio(){
+        container.removeEventListener('click',startAudio);
+        document.getElementById('audio').play();
+      }
 
       function initGUI() {
         gui = new dat.GUI();
@@ -71,15 +80,21 @@
           particleCount = parseInt( value );
           particles.setDrawRange( 0, particleCount );
         });
+        gui.add(camera.position, "z", 1000,5000).step(100);
+        gui.close();
       }
 
       function init() {
         // initGUI();
 
+
         container = document.getElementById( 'container' );
+        _w=container.clientWidth;
+        _h=container.clientHeight;
+        console.log(_w,_h);
 
         camera = new THREE.PerspectiveCamera( 45, _w / _h, 1, 4000 );
-        camera.position.z = 1650;
+        camera.position.z = 3500;
 
         controls = new THREE.OrbitControls( camera, container );
         scene = new THREE.Scene();
@@ -172,7 +187,7 @@
         group.add( linesMesh );
 
 
-        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true } );
         renderer.setPixelRatio( window.devicePixelRatio );
         renderer.setSize( _w,_h );
         // renderer.setClearColor(new THREE.Color(0x110d0e, 1.0));
@@ -246,7 +261,7 @@
       function getClosest(){
 
         for ( var i = 0; i < particleCount; i++ ) {
-          var  min_dist=1000;
+          var  min_dist=3500;
           var  min_i=0;
 
           var cur_pos=new THREE.Vector3(particlePositions[ i * 3     ],particlePositions[ i * 3     +1],particlePositions[ i * 3     +2]);
@@ -293,7 +308,6 @@
             if(startMorph){
 
               if(counter-morphStartedAt>20*(0.1/effectController.morphing_speed))startMorph=false;
-
               particlePositions[ i * 3    ]=cur_pos.x*(1-effectController.morphing_speed)+ particlesData[ i ].cur_pos.x*effectController.morphing_speed;
               particlePositions[ i * 3  +1]=cur_pos.y*(1-effectController.morphing_speed)+ particlesData[ i ].cur_pos.y*effectController.morphing_speed;
               particlePositions[ i * 3  +2]=cur_pos.z*(1-effectController.morphing_speed)+ particlesData[ i ].cur_pos.z*effectController.morphing_speed;
@@ -389,7 +403,7 @@
       renderer.render( scene, camera );
 
 
-      if(frame%120==0){
+      if(frame%300==0){ //MH - controls when we begin morphing
 
        targetShapes[current_shape].points=[];
        getObjectPoints(targetShapes[current_shape],targetShapes[current_shape].points);
