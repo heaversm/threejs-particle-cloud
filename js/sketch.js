@@ -48,12 +48,12 @@ var targetShapes;
 
 function initTextAnim() {
   console.log("init text anim");
-  document.querySelector('.text-container').classList.toggle('active',true);
+  document.querySelector(".text-container").classList.toggle("active", true);
   anime({
     targets: ".text-container path",
     strokeDashoffset: [anime.setDashoffset, 0],
     easing: "easeInOutSine",
-    duration: 10000,
+    duration: 5000,
     delay: function (el, i) {
       return i * 250;
     },
@@ -70,6 +70,18 @@ function initTween() {
     onUpdate: function () {
       particleCount = parseInt(effectController.particleCount);
       particles.setDrawRange(0, particleCount);
+    },
+  });
+
+  gsap.to(camera.position, {
+    z: 3500,
+    duration: 30,
+    onComplete: () => {
+      gsap.to(camera.position, {
+        z: 200,
+        duration: 5,
+        delay: 30,
+      });
     },
   });
 }
@@ -112,7 +124,7 @@ function init() {
   console.log(_w, _h);
 
   camera = new THREE.PerspectiveCamera(45, _w / _h, 1, 4000);
-  camera.position.z = 3500;
+  camera.position.z = 500;
 
   controls = new THREE.OrbitControls(camera, container);
   scene = new THREE.Scene();
@@ -129,14 +141,30 @@ function init() {
   var dodecGeom = new THREE.DodecahedronGeometry(600, 0);
   var sphereGeom = new THREE.SphereGeometry(600, 16, 16);
   var icoGeom = new THREE.IcosahedronGeometry(600, 0);
+  var coneGeom = new THREE.ConeGeometry(600, 900, 32);
+  var cylinderGeom = new THREE.CylinderGeometry(400, 600, 600, 32);
+  var ringGeom = new THREE.RingGeometry(200, 600, 32);
+  var torusGeom = new THREE.TorusKnotGeometry(600, 200, 100, 16);
 
-  var oct = new THREE.Mesh(dodecGeom, material);
-  oct.points = [];
+  var shape1 = new THREE.Mesh(octGeom, material);
+  shape1.points = [];
 
-  var box = new THREE.Mesh(icoGeom, material);
-  box.points = [];
+  var shape2 = new THREE.Mesh(sphereGeom, material);
+  shape2.points = [];
 
-  targetShapes = [box, oct];
+  var shape3 = new THREE.Mesh(coneGeom, material);
+  shape3.points = [];
+
+  var shape4 = new THREE.Mesh(torusGeom, material);
+  shape4.points = [];
+
+  var shape5 = new THREE.Mesh(dodecGeom, material);
+  shape5.points = [];
+
+  var shape6 = new THREE.Mesh(cylinderGeom, material);
+  shape6.points = [];
+
+  targetShapes = [shape1, shape3, shape2, shape4, shape5, shape6];
 
   // var helper = new THREE.BoxHelper( new THREE.Mesh( new THREE.BoxGeometry( r, r, r ) ) );
   // helper.material.color.setHex( 0x080808 );
@@ -214,9 +242,9 @@ function init() {
   linesMesh = new THREE.LineSegments(geometry, material);
   group.add(linesMesh);
 
-  renderer = new THREE.WebGLRenderer({ 
-    //antialias: true, 
-    alpha: true 
+  renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
   });
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(_w, _h);
@@ -442,7 +470,7 @@ function render() {
 
   if (frame % 300 == 0) {
     //MH - controls when we begin morphing
-    if (!firstMorphHasOccurred){
+    if (!firstMorphHasOccurred) {
       firstMorphHasOccurred = true;
       initTextAnim();
     }

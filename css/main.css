@@ -7,8 +7,6 @@ body {
   color: #fff;
   margin: 0px;
   overflow: hidden;
-  background: url('../images/poster.jpg');
-  background-size: cover;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -47,7 +45,7 @@ body {
 }
 
 .text-container path {
-  stroke: #fff;
+  stroke: #edf219;
   stroke-width: 1px;
   fill: none;
 }
